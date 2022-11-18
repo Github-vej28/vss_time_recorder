@@ -7,14 +7,14 @@ import os
 
 from employee import Employee
 
-file_input = 'file/Dữ liệu máy chấm công.xlsx'
-file_output = 'file/20221018153519_39296_DanhsachImportChamcongCTV4.xls'
-file_on_leave = 'file/20221019154837_39296_BaoCao_TonghopdonxinnghiCBCNV.xlsx'
+file_input = 'input/cham_cong/20221118161927_37640_BAOCAO_TONG_HOP_CONG.xlsx'
+file_output = 'output/20221018153519_39296_DanhsachImportChamcongCTV4.xls'
+file_on_leave = 'input/nghi_phep/20221118162155_37640_BaoCao_TonghopdonxinnghiCBCNV.xlsx'
 
-MONTH = 10
+MONTH = 11
 
-start = '10/01/2022'
-end = '10/31/2022'
+start = '11/01/2022'
+end = '11/30/2022'
 
 ### (Optional) Find all weekend days 
 def getWeekendDays(start, end):
@@ -36,17 +36,21 @@ max = sheet.max_row + 1
 # With openyxl, cols and rows start with 1
 employees = dict()
 
-for i in range(2, max):
+# for i in range(2, max):
+for i in range(1, max):
     id = sheet.cell(row = i, column = 2).value
+    # id = sheet.cell(row = i, column = 5).value
     if id not in employees:
         new_employee = Employee(id)
         employees[id] = new_employee
     
     date = sheet.cell(row = i, column = 3).value
+    # date = sheet.cell(row = i, column = 6).value
     employee = employees[id]
     employee.createDate(date)
 
     timestamp = sheet.cell(row = i, column = 4).value
+    # timestamp = sheet.cell(row = i, column = 7).value
     employee.Timekeeping[date.day].updateTime(timestamp)
 ###    
 
@@ -87,12 +91,7 @@ for i in range(8, num_rows):
     end_date_on_leave = datetime.datetime.strptime(dates_on_leave[1], "%d/%m/%Y %H:%M")
 
     reason = sheet_off.cell(row = i, column = 6).value
-    while (from_date_on_leave.date() <= end_date_on_leave.date()):
-        sign = employee.getOnLeave(from_date_on_leave, reason)
-        if (sign == "P"):
-            employee.checkOnLeaveType(from_date_on_leave, end_date_on_leave)
-            break
-        from_date_on_leave += datetime.timedelta(days=1)
+    employee.getOnLeave(from_date_on_leave, end_date_on_leave, reason)
 ###
 
 ### Viết vào file output
@@ -136,6 +135,12 @@ for row in range(2, r_sheet.nrows - 2):
         day = date.day
         if (day in sun) or (day in sat):
             continue
-        w_sheet.write(row, day + 2, dates_on_leave[date])
+        # w_sheet.write(row, day + 2, dates_on_leave[date])
+        value = r_sheet.cell(row, day + 2).value
+        if value == "":
+            w_sheet.write(row, day + 2, dates_on_leave[date])
+        else:
+            value = value + ", " + dates_on_leave[date]
+            w_sheet.write(row, day + 2, value)
 
 wb.save(file_output + '.out' + os.path.splitext(file_output)[-1])
