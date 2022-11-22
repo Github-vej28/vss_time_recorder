@@ -1,6 +1,7 @@
 import tkinter.filedialog as filedialog
 import os
 from tkinter import *
+import tkinter.ttk as ttk
 
 class GUI():
     def __init__(self):
@@ -17,6 +18,7 @@ class GUI():
         self.file_input = filedialog.askopenfilename(initialdir=self.cur_dir, title="Select file", filetypes=(("excel files", "*.xlsx *.xls"), ("all files", "*.*")))
         for wid in frame.winfo_children():
             if type(wid) == Entry:
+                wid.delete(0, END)
                 wid.insert(0, self.file_input)
         self.cur_dir = os.path.dirname(self.file_input)
 
@@ -24,6 +26,7 @@ class GUI():
         self.file_on_leave = filedialog.askopenfilename(initialdir=self.cur_dir, title="Select file", filetypes=(("excel files", "*.xlsx *.xls"), ("all files", "*.*")))
         for wid in frame.winfo_children():
             if type(wid) == Entry:
+                wid.delete(0, END)
                 wid.insert(0, self.file_on_leave)
         self.cur_dir = os.path.dirname(self.file_on_leave)
 
@@ -31,6 +34,7 @@ class GUI():
         self.file_output = filedialog.askopenfilename(initialdir=self.cur_dir, title="Select file", filetypes=(("excel files", "*.xlsx *.xls"), ("all files", "*.*")))
         for wid in frame.winfo_children():
             if type(wid) == Entry:
+                wid.delete(0, END)
                 wid.insert(0, self.file_output)
         self.cur_dir = os.path.dirname(self.file_output)
 
@@ -41,22 +45,23 @@ class GUI():
 
     def show(self):
         self.root.title("Timekeeping machine program")
+        
         line1 = Frame(self.root, height=1, width=400, bg="grey80", relief='groove')
         line2 = Frame(self.root, height=1, width=400, bg="grey80", relief='groove')
 
         chamcong_path = Label(self.top_frame, text="Cham cong File Path:")
-        chamcong_entry = Entry(self.top_frame, text="", width=40)
-        browse1 = Button(self.top_frame, text="Browse", command=lambda: self.browseTimekeeper(self.top_frame))
+        chamcong_entry = ttk.Entry(self.top_frame, text="", width=50)
+        browse1 = ttk.Button(self.top_frame, text="Browse", command=lambda: self.browseTimekeeper(self.top_frame))
 
         nghiphep_path = Label(self.middle_frame, text="Nghi phep File Path:")
-        nghiphep_entry = Entry(self.middle_frame, text="", width=40)
-        browse2 = Button(self.middle_frame, text="Browse", command=lambda: self.browseOnLeaveFile(self.middle_frame))
+        nghiphep_entry = ttk.Entry(self.middle_frame, text="", width=50)
+        browse2 = ttk.Button(self.middle_frame, text="Browse", command=lambda: self.browseOnLeaveFile(self.middle_frame))
 
         output_path = Label(self.bottom_frame, text="Output File Path:")
-        output_entry = Entry(self.bottom_frame, text="", width=40)
-        browse3 = Button(self.bottom_frame, text="Browse", command=lambda: self.browseOutputFile(self.bottom_frame))
+        output_entry = ttk.Entry(self.bottom_frame, text="", width=50)
+        browse3 = ttk.Button(self.bottom_frame, text="Browse", command=lambda: self.browseOutputFile(self.bottom_frame))
 
-        begin_button = Button(self.bottom_frame, text='Begin!', command=self.begin)
+        begin_button = ttk.Button(self.bottom_frame, text='Begin!', command=self.begin)
 
         self.top_frame.pack(side=TOP)
         line1.pack(pady=10)
