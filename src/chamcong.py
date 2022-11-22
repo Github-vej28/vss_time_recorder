@@ -14,7 +14,7 @@ class Timekeeper():
         self.screen = GUI()
         self.file_input = None
         self.file_on_leave = None
-        self.file_output = 'output/20221018153519_39296_DanhsachImportChamcongCTV4.xls'
+        self.file_output = None
 
         self.employees = dict()
         self.sat = None
@@ -33,9 +33,9 @@ class Timekeeper():
                 if sheet.cell(row=row, column=col).value != None:
                     return row, col
 
-    def getFileInput(self):
+    def getExcelFiles(self):
         self.screen.show()
-        self.file_input, self.file_on_leave = self.screen.getInputFiles()
+        self.file_input, self.file_on_leave, self.file_output = self.screen.getFiles()
 
     def read_timekeeping_machine(self):
         workbook_in = openpyxl.load_workbook(self.file_input)
@@ -154,9 +154,9 @@ class Timekeeper():
         wb.save(self.file_output + '[T' + str(self.MONTH) + ']' + os.path.splitext(self.file_output)[-1])
 
     def process(self):
-        self.getFileInput()
-        if self.file_input == None or self.file_on_leave == None:
-            print("Exit program")
+        self.getExcelFiles()
+        if self.file_input == None or self.file_on_leave == None or self.file_output == None:
+            print("Exit")
             return
         self.read_timekeeping_machine()
         self.readFileOnLeave()
