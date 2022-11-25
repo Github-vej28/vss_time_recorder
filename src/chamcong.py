@@ -117,11 +117,13 @@ class Timekeeper():
 
         for row in range(2, r_sheet.nrows - 2):
             id = r_sheet.cell(row, 1).value
+            value = None
 
             if id not in self.employees:
                 continue
             employee = self.employees[id]
 
+            tmp = dict()
             dates = employee.Timekeeping
             for day in dates:
                 date = employee.Timekeeping[day]
@@ -129,10 +131,13 @@ class Timekeeper():
                     continue
                 if (date.salaryCoefficient() == 0):
                     w_sheet.write(row, day + 2, "XX")
+                    tmp[day] = "XX"
                 if (date.salaryCoefficient() == 1):
                     w_sheet.write(row, day + 2, "X:8")
+                    tmp[day] = "X:8"
                 if (date.salaryCoefficient() == 2):
                     w_sheet.write(row, day + 2, "X:4")
+                    tmp[day] = "X:4"
 
             # Viết kí hiệu vào file output
             dates_on_leave = employee.on_leave
@@ -143,13 +148,12 @@ class Timekeeper():
                 day = date.day
                 if (day in self.sun) or (day in self.sat):
                     continue
-                # w_sheet.write(row, day + 2, dates_on_leave[date])
-                value = r_sheet.cell(row, day + 2).value
-                if value == "":
-                    w_sheet.write(row, day + 2, dates_on_leave[date])
-                else:
-                    value = value + ", " + dates_on_leave[date]
+                if day in tmp:
+                    tmp[day] = value = tmp[day] +  ", " + dates_on_leave[date]
                     w_sheet.write(row, day + 2, value)
+                else:
+                    w_sheet.write(row, day + 2, dates_on_leave[date])
+                    tmp[day] = dates_on_leave[date]
 
         wb.save(self.file_output + '[T' + str(self.MONTH) + ']' + os.path.splitext(self.file_output)[-1])
 
